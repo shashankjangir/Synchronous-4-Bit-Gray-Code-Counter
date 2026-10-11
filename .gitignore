@@ -1,0 +1,30 @@
+# Local working files
+/tmp/
+.DS_Store
+Thumbs.db
+*.bak
+*.tmp
+
+# Quartus generated files
+**/db/
+**/incremental_db/
+**/output_files/
+**/simulation/
+*.qws
+*.qdf
+*.qpf.bak
+*.qsf.bak
+
+# Simulation build products
+/build/
+*.vvp
+*.vcd
+*.fst
+*.wlf
+transcript
+vsim.wlf
+/work/
+
+# Local Python caches
+__pycache__/
+*.pyc
