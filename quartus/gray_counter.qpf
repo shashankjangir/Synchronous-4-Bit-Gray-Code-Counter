@@ -1,0 +1,4 @@
+# Local reconstruction, not a recovered April 2026 project file.
+# Intended tool: Quartus II 13.0 SP1. Compilation remains pending.
+QUARTUS_VERSION = "13.0"
+PROJECT_REVISION = "gray_counter"

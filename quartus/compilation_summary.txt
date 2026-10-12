@@ -1,0 +1,21 @@
+COMPILATION STATUS - PENDING
+This is a tracking template, not a Quartus-generated report.
+
+Intended target: Helium v1.1 / EPM3064ALC44-10; confirm physical board
+Intended tool: Quartus II 13.0 SP1
+Local reconstruction reviewed: 2026-10-12
+
+Compilation date and actual tool version: PENDING
+Synthesis and fitting results: PENDING
+Logic/resource utilization: PENDING
+Register utilization: PENDING
+Pin utilization: PENDING
+Warnings: PENDING
+Timing analyzer and accepted constraints: PENDING
+Timing results/slack/Fmax: PENDING
+Generated programming file: PENDING
+SVF generation and UrJTAG programming result: PENDING
+New hardware observations: PENDING
+
+Fill these fields from actual tool reports and board observations, not estimates.
+Original lab photographs are historical evidence, not a new validation run.

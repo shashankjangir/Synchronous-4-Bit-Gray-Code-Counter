@@ -1,69 +1,70 @@
 # Synchronous 4-Bit Gray Code Counter
 
-A digital logic course project implementing a synchronous 4-bit Gray code counter with clocked SR flip-flop behavior in Verilog.
+Verilog reconstruction of the ELL201 course lab project: a synchronous 16-state Gray counter using clocked SR flip-flop behavior.
 
-## Overview
+## Status
 
-The counter cycles through 16 states, changing exactly one output bit on each counting transition, including the transition back to the initial state. All four state registers share the same clock.
+- Original lab reports and photos are preserved in their existing folders.
+- Verilog source is reconstructed from the code screenshot in the project report.
+- Two self-checking HDL testbenches and a Windows simulation script are included.
+- The exhaustive software-model check passes all 16 transitions.
+- **HDL simulation has not yet been run locally:** Icarus Verilog was not available during setup.
+- Quartus settings are reconstructed from the Helium v1.1 manual; physical board confirmation, compilation and timing analysis remain pending.
+- This is a documented reconstruction in progress, not a fully hardware-validated release.
 
-This project was completed as a group exercise in the ELL201 course lab. The original project report documents the state table, SR excitation rules, Karnaugh maps, Verilog implementation, and photographs of the CPLD board demonstration.
+## Sequence
 
-## Counting sequence
-
-Outputs are written in the order Q3 Q2 Q1 Q0.
+Bit order is `Q3 Q2 Q1 Q0`.
 
 ```text
-0000 -> 0001 -> 0011 -> 0010
-     -> 0110 -> 0111 -> 0101 -> 0100
-     -> 1100 -> 1101 -> 1111 -> 1110
-     -> 1010 -> 1011 -> 1001 -> 1000 -> 0000
+0000 -> 0001 -> 0011 -> 0010 -> 0110 -> 0111 -> 0101 -> 0100
+     -> 1100 -> 1101 -> 1111 -> 1110 -> 1010 -> 1011 -> 1001 -> 1000 -> 0000
 ```
 
-## Design approach
+All four registers use the same rising clock edge. Exactly one state bit changes at each edge.
 
-1. Specify the present-state and next-state table.
-2. Determine the set and reset inputs required for each state bit.
-3. Minimize the input expressions using Karnaugh maps.
-4. Implement the counter in Verilog using four clocked SR modules.
-5. Verify the sequence in simulation and compare it with board outputs.
+## Files
 
-The code shown in the original report uses state parity to generate per-bit toggle conditions, then converts those conditions into SR inputs. The relationship between that implementation and the direct K-map expressions will be documented when the source is added.
-
-## Repository status
-
-This repository has been initialized with documentation and ignore rules. Runnable Verilog, the testbench, and Quartus project files have not been added yet.
-
-The local lab materials include:
-- A 16-state Gray-code table and SR excitation table.
-- Eight K-maps for the set and reset inputs.
-- A screenshot of the Verilog implementation.
-- Photographs of the board outputs.
-
-A Gray-counter-specific testbench and waveform still need to be recovered or recreated for this repository. No automated test results are claimed at this stage.
-
-## Planned layout
-
-| Directory | Contents to add |
+| Path | Purpose |
 | --- | --- |
-| `rtl/` | SR flip-flop and Gray counter Verilog modules |
-| `tb/` | Self-checking simulation testbench |
-| `docs/` | Design derivation, verification notes, and hardware setup |
-| `images/` | Annotated waveform and selected board photographs |
-| `quartus/` | Verified project settings, pin assignments, and timing constraints |
+| `rtl/` | SR module and report-derived parity counter |
+| `tb/` | SR unit test and 64-transition counter test |
+| `scripts/simulate.ps1` | Compile and run both HDL tests with Icarus Verilog |
+| `scripts/check_logic.py` | Exhaustive mathematical check independent of an HDL simulator |
+| `docs/design.md` | Excitation rules, direct equations, and parity explanation |
+| `docs/verification.md` | Test coverage and verification status |
+| `docs/hardware.md` | Manual-derived hardware setup and remaining validation |
+| `docs/interview_revision.md` | Focused revision questions and answers |
+| `docs/publishing_checklist.md` | Owner's report-editing and publication checklist |
+| `IMPLEMENTATION_PLAN.md` | Scope, work packages, and acceptance criteria |
+| `experiment 5/`, `experiment 6/`, `project report/` | Unchanged original reference materials |
 
-## Verification goals
+## Run the checks
 
-- Check the exact 16-state sequence over multiple cycles.
-- Check wraparound from `1000` to `0000`.
-- Check that exactly one bit changes per counting transition.
-- Check for unknown outputs after initialization.
-- Check that no SR module receives simultaneous set and reset.
-- Test reset and enable behavior if those interfaces are added.
+From the project root, with Python 3.10+:
 
-## Implementation notes
+```powershell
+python scripts/check_logic.py
+```
 
-- The report's first state-table row contains a transcription error: for `0000 -> 0001`, the correct `S0 R0` values are `10`.
-- The original Verilog screenshot initializes each register with an `initial` block and has no explicit reset port. Device-specific power-up behavior must be checked before reproducing the hardware setup.
-- Clocked SR behavior in RTL does not imply that the CPLD contains native SR flip-flops; synthesis maps the behavior onto the device's available resources.
-- The exact board device, pin mapping, and clock source must be documented from the original setup.
-- Later improvements will be identified separately from the original lab implementation.
+With `iverilog` and `vvp` on PATH:
+
+```powershell
+powershell -NoProfile -File scripts/simulate.ps1
+```
+
+The counter test writes `build/gray_counter.vcd`, which can be opened in a waveform viewer. Both HDL tests must print PASS and exit successfully before claiming HDL verification.
+
+Alternatively, compile the two files in `rtl/` and one testbench in a simulator supporting SystemVerilog. Select `tb_gray_counter_4bit` or `tb_sr_ff` as the simulation top, and create a `build` directory for waveform output.
+
+## Provenance and limitations
+
+This was a group course lab exercise. The reports document state-table/K-map work, Verilog, and board photographs. The source transcription, automated tests, and explanatory documentation here are later additions; they are not evidence of a new hardware run. Individual contributions should be stated by the owner before publication.
+
+The original interface has no reset or enable. Its `initial` value models startup in simulation; hardware support must be checked for the actual target. Modeling SR behavior does not require native SR registers inside the CPLD. Pins are manual-derived; actual board setup and timing results remain unverified.
+
+The original reports contain personal details. They are excluded from Git by default until the owner edits and deliberately selects the files to publish. No license has been selected yet.
+
+## Optional software-model waveform
+
+Run `python scripts/generate_vcd.py` to create `build/gray_counter_model.vcd`. This checks 64 mathematical transitions and labels the waveform as a Python model. It does not replace HDL simulation and never writes the HDL output path `build/gray_counter.vcd`.

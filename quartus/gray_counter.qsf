@@ -1,0 +1,27 @@
+# Reconstructed Helium v1.1 settings; compilation/board validation pending.
+# Manual: https://lab.daiict.ac.in/images/pdf/Helium%20User%20Manual.pdf
+# Intended tool: Quartus II 13.0 SP1; MAX 3000A is unsupported in 13.1.
+set_global_assignment -name FAMILY "MAX 3000A"
+set_global_assignment -name DEVICE EPM3064ALC44-10
+set_global_assignment -name TOP_LEVEL_ENTITY gray_counter_4bit
+set_global_assignment -name VERILOG_FILE ../rtl/sr_ff.v
+set_global_assignment -name VERILOG_FILE ../rtl/gray_counter_4bit.v
+set_global_assignment -name RESERVE_ALL_UNUSED_PINS "AS INPUT TRI-STATED"
+
+# Manual's first four LEDs (LED1..LED4); confirm actual board revision.
+set_location_assignment PIN_43 -to clk
+set_location_assignment PIN_24 -to q0
+set_location_assignment PIN_25 -to q1
+set_location_assignment PIN_26 -to q2
+set_location_assignment PIN_27 -to q3
+
+# Confirm electrical settings against the actual board before programming.
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to clk
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to q0
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to q1
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to q2
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to q3
+
+# Timing setup pending: choose the supported legacy timing-analyzer flow.
+# gray_counter.sdc records intended clock timing but is not auto-loaded here.
+# See ../docs/hardware.md. No timing closure is claimed.
